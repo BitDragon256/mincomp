@@ -94,11 +94,11 @@ def get_gates(level, boundings):
         inports, outports = [], []
 
         start, end = bounding
-        for x in range(start[0], end[0]):
-            for z in range(start[2], end[2]):
+        for x in range(start[0], end[0] + 1):
+            for z in range(start[2], end[2] + 1):
                 (cx, cz), (ox, oz) = to_chunk(level, x, z)
                 chunk = level.get_chunk(cx, cz, overworld)
-                for y in range(start[1], end[1]):
+                for y in range(start[1], end[1] + 1):
                     block = chunk.block_palette[chunk.blocks[ox, y, oz]]
                     loc = (x, y, z)
                     if block == universal_inport_block:
@@ -119,9 +119,9 @@ def get_gates(level, boundings):
             outports,
             bounding
         ))
-        print(inports)
-        print(outports)
-        print(bounding)
+        print("inports: ", inports)
+        print("outports: ", outports)
+        print("bounding: ", bounding)
     return gates
 
 
