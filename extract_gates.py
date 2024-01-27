@@ -49,6 +49,31 @@ def get_start_end(level):
     return starts, ends
 
 
+def manhattan_distance(start, end):
+    dist = 0
+    for d in range(3):
+        dd = end[d] - start[d]
+        if dd <= 0:
+            return -1
+        dist += dd
+    return dist
+
+
+def merge_start_end(starts, ends):
+    boundings = []
+    for start in starts:
+        min_end = ends[0]
+        min_dist = 1000000
+        for end in ends:
+            dist = manhattan_distance(start, end)
+            if min_dist > dist > 0:
+                min_end = end
+                min_dist = dist
+        boundings.append((start, min_end))
+    return boundings
+
+
 def extract():
     level = amulet.load_level(world.world_path())
     starts, ends = get_start_end(level)
+    boundings = merge_start_end(starts, ends)
