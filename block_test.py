@@ -44,14 +44,14 @@ def edit_block():
     level.close()
 
 
-def complex_set_block():
+def complex_set_block(path):
     import amulet
     from amulet.api.block import Block
     from amulet.utils.world_utils import block_coords_to_chunk_coords
     from amulet_nbt import StringTag, IntTag
 
     # load the level
-    level = amulet.load_level("Z:/Programm/MultiMC/instances/1.20.1/.minecraft/saves/Testing Redstone")
+    level = amulet.load_level(path)
 
     # let's set the block at 15, 70, 17 and 15, 72, 17 to be green glazed
     # terracotta using the Java and Bedrock formats respectively.
