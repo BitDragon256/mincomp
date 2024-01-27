@@ -41,7 +41,7 @@ def get_start_end(level):
             for x in range(chunk_width):
                 for z in range(chunk_width):
                     block = chunk.block_palette[chunk.blocks[x, y, z]]
-                    loc = (x + chunk_coords[0], y, z + chunk_coords[1])
+                    loc = (x + chunk_coords[0] * chunk_width, y, z + chunk_coords[1] * chunk_width)
                     if block == universal_start_block:
                         starts.append(loc)
                     elif block == universal_end_block:
