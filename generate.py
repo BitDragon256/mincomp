@@ -4,6 +4,8 @@ from enum import Enum
 import amulet
 from amulet.api.block import Block
 
+from gate import MinecraftGateBlueprint
+
 
 CIRCUIT_TAG = "circuit"
 GATE_TAG = "comp"
@@ -32,12 +34,6 @@ class LogicGate:
         self.position = (0, 0)
         self.out = []
         self.direction = GateDirection.NONE
-
-
-class MinecraftGateBlueprint:
-    def __init__(self, inport_positions, outport_positions):
-        self.inport_positions = inport_positions
-        self.outport_positions = outport_positions
 
 
 minecraft_gate_blueprints = {

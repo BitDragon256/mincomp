@@ -4,12 +4,10 @@ from amulet.utils.world_utils import block_coords_to_chunk_coords
 from amulet_nbt import StringTag, IntTag
 
 import world
+from gate import MinecraftGateBlueprint
 
 chunks_to_check = [(-1, 1)]
 overworld = "minecraft:overworld"
-start_block = Block(
-    "minecraft", "blue_concrete"
-)
 universal_start_block = Block(
     "universal_minecraft",
     "concrete",
@@ -17,14 +15,25 @@ universal_start_block = Block(
         "color": StringTag("blue")
     }
 )
-end_block = Block(
-    "minecraft", "red_concrete"
-)
 universal_end_block = Block(
     "universal_minecraft",
     "concrete",
     {
         "color": StringTag("red")
+    }
+)
+universal_inport_block = Block(
+    "universal_minecraft",
+    "concrete",
+    {
+        "color": StringTag("white")
+    }
+)
+universal_outport_block = Block(
+    "universal_minecraft",
+    "concrete",
+    {
+        "color": StringTag("orange")
     }
 )
 
@@ -73,7 +82,51 @@ def merge_start_end(starts, ends):
     return boundings
 
 
+def to_chunk(level, x, z):
+    cx, cz = block_coords_to_chunk_coords(x, z)
+    ox, oz = x - cx * chunk_width, z - cz * chunk_width
+    return (cx, cz), (ox, oz)
+
+
+def get_gates(level, boundings):
+    gates = []
+    for bounding in boundings:
+        inports, outports = [], []
+
+        start, end = bounding
+        for x in range(start[0], end[0]):
+            for z in range(start[2], end[2]):
+                (cx, cz), (ox, oz) = to_chunk(level, x, z)
+                chunk = level.get_chunk(cx, cz, overworld)
+                for y in range(start[1], end[1]):
+                    block = chunk.block_palette[chunk.blocks[ox, y, oz]]
+                    loc = (x, y, z)
+                    if block == universal_inport_block:
+                        inports.append(loc)
+                    elif block == universal_outport_block:
+                        outports.append(loc)
+
+        (cx, cy, cz) = bounding[0] # center
+        for inport in inports:
+            x, y, z = inport
+            inport = (x - cx, y - cy, z - cz)
+        for outport in outports:
+            x, y, z = outport
+            outport = (x - cx, y - cy, z - cz)
+
+        gates.append(MinecraftGateBlueprint(
+            inports,
+            outports,
+            bounding
+        ))
+        print(inports)
+        print(outports)
+        print(bounding)
+    return gates
+
+
 def extract():
     level = amulet.load_level(world.world_path())
     starts, ends = get_start_end(level)
     boundings = merge_start_end(starts, ends)
+    gates = get_gates(level, boundings)
