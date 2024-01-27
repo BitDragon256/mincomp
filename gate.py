@@ -49,3 +49,6 @@ class MinecraftGateBlueprint:
         self.outport_positions = outport_positions
         self.bounding_box = bounding_box
         self.blocks = blocks
+
+    def __repr__(self):
+        return f"Gate: Bounding: {self.bounding_box}, In: {self.inport_positions}, Out: {self.outport_positions}"

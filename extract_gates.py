@@ -96,11 +96,15 @@ def get_gates(level, boundings):
         inports, outports = [], []
 
         start, end = bounding
-        blocks = BlockArray(
+        bounding_box = (
             end[0] - start[0] + 1,
             end[1] - start[1] + 1,
             end[2] - start[2] + 1
         )
+        blocks = BlockArray(
+            *bounding_box
+        )
+
         for x in range(start[0], end[0] + 1):
             for z in range(start[2], end[2] + 1):
                 (cx, cz), (ox, oz) = to_chunk(level, x, z)
@@ -114,18 +118,18 @@ def get_gates(level, boundings):
                     elif block == universal_outport_block:
                         outports.append(loc)
 
-        (cx, cy, cz) = bounding[0]  # center
-        for inport in inports:
-            x, y, z = inport
-            inport = (x - cx, y - cy, z - cz)
-        for outport in outports:
-            x, y, z = outport
-            outport = (x - cx, y - cy, z - cz)
+        cx, cy, cz = bounding[0]  # center
+        for i in range(len(inports)):
+            x, y, z = inports[i]
+            inports[i] = (x - cx, y - cy, z - cz)
+        for i in range(len(outports)):
+            x, y, z = outports[i]
+            outports[i] = (x - cx, y - cy, z - cz)
 
         gates.append(MinecraftGateBlueprint(
             inports,
             outports,
-            bounding,
+            bounding_box,
             blocks
         ))
     return gates
@@ -136,3 +140,4 @@ def extract():
     starts, ends = get_start_end(level)
     boundings = merge_start_end(starts, ends)
     gates = get_gates(level, boundings)
+    return gates
